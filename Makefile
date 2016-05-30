@@ -19,7 +19,7 @@ ROSETTASDKPLUGINS=${ROSETTASDK}/../../bundled_plugins/
 # classpath
 JUNITCLASSPATH=/usr/share/java/junit4.jar
 #SOURCESCLASSPATH=org/slub/rosetta/dps/repository/plugin/storage/nfs
-CLASSPATH=./java:${ROSETTASDKDEPOSIT}/../src/:${ROSETTASDKDEPOSIT}/xmlbeans-2.3.0.jar:${ROSETTASDKDEPOSIT}/dps-sdk-${ROSETTAVERSION}.jar:${ROSETTASDKDEPOSIT}/log4j-1.2.14.jar:${ROSETTASDKPLUGINS}/NFSStoragePlugin.jar
+CLASSPATH=./java:${ROSETTASDKDEPOSIT}/../src/:${ROSETTASDKDEPOSIT}/xmlbeans-2.3.0.jar:${ROSETTASDKDEPOSIT}/dps-sdk-${ROSETTAVERSION}.jar:${ROSETTASDKDEPOSIT}/log4j-1.2.14.jar
 
 # sources
 
@@ -30,7 +30,7 @@ JAR=SLUBTechnicalMetadataExtractorCheckItTiffPlugin.jar
 all: $(JAR)
 
 help:
-	@echo "erzeugt Storage-Plugin für Rosetta von Exlibris"
+	@echo "erzeugt Plugin für Rosetta von Exlibris"
 	@echo ""
 	@echo "Das Argument 'clean' löscht temporäre Dateien, 'help' gibt diese Hilfe aus und"
 	@echo "'compile' erzeugt ein JAR-File und ein Bash-Script welches das Java-Programm"
