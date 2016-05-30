@@ -17,23 +17,16 @@ limitations under the License.
 package org.slub.rosetta.dps.repository.plugin;
 
 
-import com.exlibris.dps.sdk.techmd.MDExtractorPlugin;
-import java.io.DataOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.io.*;
-
 import com.exlibris.core.infra.common.exceptions.logging.ExLogger;
 import com.exlibris.core.sdk.strings.StringUtils;
-import com.exlibris.digitool.common.streams.ScriptUtil;
-import com.exlibris.digitool.exceptions.ScriptException;
+import com.exlibris.dps.sdk.techmd.MDExtractorPlugin;
+
+import java.io.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * SLUBTechnicalMetadataExtractorCheckItTiffPlugin
