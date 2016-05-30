@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.io.*;
 
 import com.exlibris.core.infra.common.exceptions.logging.ExLogger;
 import com.exlibris.core.sdk.strings.StringUtils;
@@ -41,11 +42,11 @@ import com.exlibris.digitool.exceptions.ScriptException;
  * @see com.exlibris.dps.sdk.techmd.MDExtractorPlugin 
  */
 public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin {
-    private Status status = Status.FAILED;
-    private enum Status {PASSED, FAILED};
+
     private String checkit_tiff_binary_path;
     private String checkit_tiff_config_path;
     private List<String> extractionErrors = new ArrayList<String>();
+
     protected static final ExLogger log = ExLogger.getExLogger(SLUBTechnicalMetadataExtractorCheckItTiffPlugin.class, ExLogger.VALIDATIONSTACK);
     /** constructor */
     public SLUBTechnicalMetadataExtractorCheckItTiffPlugin() {
@@ -60,21 +61,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         this.checkit_tiff_config_path = initp.get("config_file");
         System.out.println("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated with checkit_tiff_binary_path=" + checkit_tiff_binary_path + " cfg=" + checkit_tiff_config_path);
     }
-    /** stand alone check, main file to call local installed clamd
-     * @param args list of files which should be scanned
-     */
-    public static void main(String[] args) {
-        SLUBTechnicalMetadataExtractorCheckItTiffPlugin plugin = new SLUBTechnicalMetadataExtractorCheckItTiffPlugin();
-        Map<String, String> initp = new HashMap<String, String>();
-        initp.put( "checkit_tiff", "/usr/bin/checkit_tiff");
-        initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
-        plugin.initParams( initp );
-        System.out.println("Agent: " + plugin.getAgent());
-        for (String file : args) {
-            plugin.extract(file);
-            System.out.println("RESULT: " + plugin.isValid + " SIGNATURE: " + plugin.getOutput());
-        }
-    }
+
 
     @Override
     public void extract(String filePath) throws Exception {
@@ -87,11 +74,23 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         throw new Exception("path not found");
       }
       try {
-        // FIXME:
-        String result = ""; //runScript(filePath);
+        // FIXME
+          Process p = Runtime.getRuntime().exec(checkit_tiff_binary_path + " " + filePath + " " + checkit_tiff_config_path );
+          p.waitFor();
+          BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+          String line=reader.readLine();
+
+          while (line != null) {
+              System.out.println(line);
+              line = reader.readLine();
+
+          }
+/*        String result = ""; //runScript(filePath);
         if (result != null) {
           parser.parse(result);
         }
+        */
+
       } catch (IOException excep) {
         // OK IO error getting process output
         System.err.println("checkit_tiff problem for file: " + filePath);
@@ -112,9 +111,10 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
     public String getAgent() {
         try {
           Process p = Runtime.getRuntime().exec(this.checkit_tiff_binary_path);
-            p.waitFor();
+            //p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line=reader.readLine();
+            String response="";
             while (line != null) {
                 System.out.println(line);
                 line = reader.readLine();
@@ -123,15 +123,15 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             return response.trim();
         } catch (IOException e) {
             //log.error("exception creation socket, clamd not available at host=" + host + "port=" + port, e);
-            setStatus(Status.FAILED);
-            setSignature("ERROR: checkit_tiff not available");
+
+
             return "ERROR: checkit_tiff not available";
         }
     }
 
     @Override
     public String getAttributeByName(String attribute) {
-      return (String) parser.getAttribute(attribute);
+      return (String) "";
     }
 
     @Override
@@ -154,7 +154,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public boolean isValid() {
-      return parser.getValid();
+      return true;
     }
     @Override
     public String getFormatName() {
@@ -174,6 +174,22 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
     @Override
     public String getMimeType() {
       return null;
+    }
+
+    /** stand alone check, main file to call local installed clamd
+     * @param args list of files which should be scanned
+     */
+    public static void main(String[] args) {
+        SLUBTechnicalMetadataExtractorCheckItTiffPlugin plugin = new SLUBTechnicalMetadataExtractorCheckItTiffPlugin();
+        Map<String, String> initp = new HashMap<String, String>();
+        initp.put( "checkit_tiff", "/usr/bin/checkit_tiff");
+        initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
+        plugin.initParams( initp );
+        System.out.println("Agent: " + plugin.getAgent());
+        for (String file : args) {
+            //plugin.extract(file);
+            System.out.println("RESULT: " + plugin.isValid());
+        }
     }
 }
 
