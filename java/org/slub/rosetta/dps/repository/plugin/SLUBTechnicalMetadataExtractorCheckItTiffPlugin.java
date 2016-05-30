@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package org.slub.rosetta.dps.repository.plugin.mdExtractor;
+package org.slub.rosetta.dps.repository.plugin;
 
 
 import com.exlibris.dps.sdk.techmd.MDExtractorPlugin;
