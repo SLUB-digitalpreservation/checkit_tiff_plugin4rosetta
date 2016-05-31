@@ -7,7 +7,7 @@
 JAVAPATH=$(wildcard /usr/lib/jvm/java-1.7.0-openjdk-*/bin/)
 
 # Verwendete Rosetta-Version
-ROSETTAVERSION=4.1.0
+ROSETTAVERSION=5.0.1
 
 # Pfad zum Rosetta-SDK
 ROSETTASDK=/exlibris/dps/d4_1/system.dir/dps-sdk-${ROSETTAVERSION}/lib/
@@ -19,7 +19,7 @@ ROSETTASDKPLUGINS=${ROSETTASDK}/../../bundled_plugins/
 # classpath
 JUNITCLASSPATH=/usr/share/java/junit4.jar
 #SOURCESCLASSPATH=org/slub/rosetta/dps/repository/plugin/storage/nfs
-CLASSPATH=./java:${ROSETTASDKDEPOSIT}/../src/:${ROSETTASDKDEPOSIT}/xmlbeans-2.3.0.jar:${ROSETTASDKDEPOSIT}/dps-sdk-${ROSETTAVERSION}.jar:${ROSETTASDKDEPOSIT}/log4j-1.2.14.jar
+CLASSPATH=./java:${ROSETTASDKDEPOSIT}/../src/:${ROSETTASDKDEPOSIT}/xmlbeans-2.3.0.jar:${ROSETTASDKDEPOSIT}/dps-sdk-${ROSETTAVERSION}.jar:${ROSETTASDKDEPOSIT}/log4j-1.2.14.jar:/usr/share/java/commons-lang.jar
 
 # sources
 
