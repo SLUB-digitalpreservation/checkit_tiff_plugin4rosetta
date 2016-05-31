@@ -1,5 +1,5 @@
 <pl:metadata-config xmlns:pl="http://www.exlibrisgroup.com/Plugins/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<pl:pluginTypeName>checkit_tiff plugin</pl:pluginTypeName>
+	<pl:pluginTypeName>MDExtractorPlugin</pl:pluginTypeName>
 	<pl:deployName>SLUBTechnicalMetadataExtractorCheckItTiffPlugin</pl:deployName>
 	<pl:className>org.slub.rosetta.dps.repository.plugin.SLUBTechnicalMetadataExtractorCheckItTiffPlugin</pl:className>
 	<pl:initParameters>
@@ -38,7 +38,7 @@
 	<pl:description>SLUB Technical Metadata Extractor Plugin, using check_it_tiff to validate tiff-files</pl:description>
 	<pl:version>1.4</pl:version>
 	<pl:materialType>DIGITAL</pl:materialType>
-	<pl:module>Repository</pl:module>
+	<pl:module>Preservation</pl:module>
 	<pl:generalType>TASK</pl:generalType>
 	<pl:publicApi>N</pl:publicApi>
 	<pl:implType>java</pl:implType>
