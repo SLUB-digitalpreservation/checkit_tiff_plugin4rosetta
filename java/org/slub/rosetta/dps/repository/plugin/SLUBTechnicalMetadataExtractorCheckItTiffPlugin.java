@@ -68,6 +68,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
         try {
             String execstring = this.checkit_tiff_binary_path + " " + filePath + " " + this.checkit_tiff_config_path;
+            System.out.println("executing: " + execstring);
             Process p = Runtime.getRuntime().exec( execstring);
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -75,8 +76,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
             while (line != null) {
                 System.out.println(line);
-                line = reader.readLine();
                 extractionErrors.add(line);
+                line = reader.readLine();
             }
             if (p.exitValue() == 0) {
                 isvalid=true;
@@ -89,7 +90,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             //log.error("exception creation socket, clamd not available at host=" + host + "port=" + port, e);
 
 
-            //return "ERROR: checkit_tiff not available";
+            System.out.println( "ERROR: checkit_tiff not available, path=" + this.checkit_tiff_binary_path + ", " + e.getMessage());
+            throw new Exception("ERROR: checkit_tiff not available, path=" + this.checkit_tiff_binary_path + ", " + e.getMessage());
         }
     }
 
@@ -113,8 +115,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             String response="";
             while (line != null) {
                 System.out.println(line);
-                line = reader.readLine();
                 response+=line;
+                line = reader.readLine();
             }
             return response.trim();
         } catch (IOException e) {
@@ -130,18 +132,18 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public String getAttributeByName(String attribute) {
-      return (String) "attribute";
+      return ( "dummy");
     }
 
     @Override
     public List<String> getExtractionErrors() {
-      return extractionErrors;
+      return this.extractionErrors;
     }
 
     @Override
     public List<String> getSupportedAttributeNames() {
       List<String> attributes = new ArrayList<String>();
-
+        attributes.add("dummy");
       return attributes;
 
     }
@@ -153,7 +155,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public boolean isValid() {
-      return isvalid;
+      System.out.println("DEBUG: is valid=" + this.isvalid);
+        return this.isvalid;
     }
     @Override
     public String getFormatName() {
@@ -196,6 +199,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
                 e.printStackTrace();
             }
             System.out.println("RESULT: " + plugin.isValid());
+            System.out.println("ERRORMESSAGE: " + plugin.getExtractionErrors());
         }
     }
 }
