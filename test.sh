@@ -7,4 +7,4 @@ ${EXL}/dps-sdk-projects/dps-sdk-deposit/lib/xmlbeans-2.3.0.jar:\
 /usr/share/java/commons-lang.jar:\
 ./SLUBTechnicalMetadataExtractorCheckItTiffPlugin.jar" \
 org.slub.rosetta.dps.repository.plugin.SLUBTechnicalMetadataExtractorCheckItTiffPlugin \
-$1
+"$1"
