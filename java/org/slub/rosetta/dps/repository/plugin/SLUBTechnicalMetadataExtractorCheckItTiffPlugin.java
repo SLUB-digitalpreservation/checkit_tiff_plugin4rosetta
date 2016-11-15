@@ -37,9 +37,13 @@ import java.util.Map;
 public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin {
     private String checkit_tiff_binary_path;
     private String checkit_tiff_config_path;
+    private String exiftool_binary_path;
     private List<String> extractionErrors = new ArrayList<String>();
+    private List<String> validationLog = new ArrayList<String>();
     private boolean isvalid = false;
     private boolean iswellformed = false;
+
+    private Map<String,String> attributes = new HashMap<String, String>();
     //static final ExLogger log = ExLogger.getExLogger(SLUBTechnicalMetadataExtractorCheckItTiffPlugin.class, ExLogger.VALIDATIONSTACK);
     /** constructor */
     public SLUBTechnicalMetadataExtractorCheckItTiffPlugin() {
@@ -52,20 +56,31 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
     public void initParams(Map<String, String> initp) {
         this.checkit_tiff_binary_path = initp.get("checkit_tiff").trim();
         this.checkit_tiff_config_path = initp.get("config_file").trim();
-        System.out.println("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated with checkit_tiff_binary_path=" + checkit_tiff_binary_path + " cfg=" + checkit_tiff_config_path);
+        this.exiftool_binary_path = initp.get("exiftool").trim();
+        System.out.println("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated with checkit_tiff_binary_path=" + checkit_tiff_binary_path + " cfg=" + checkit_tiff_config_path + " and exiftool_binary_path=" + exiftool_binary_path);
+    }
+
+    private void parse_exiftool_output( String exiftoolxml ) {
+        // TODO:
+        
     }
 
     @Override
     public void extract(String filePath) throws Exception {
       if(StringUtils.isEmptyString(checkit_tiff_binary_path)) {
         //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
-        throw new Exception("path not found");
+        throw new Exception("path for checkit_tiff_binary not found");
       }
       if(StringUtils.isEmptyString(checkit_tiff_config_path)) {
         //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
-        throw new Exception("path not found");
+        throw new Exception("path for checkit_tiff_config not found");
+      }
+      if(StringUtils.isEmptyString(exiftool_binary_path)) {
+        //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
+        throw new Exception("path for exiftool_binary not found");
       }
 
+        // checkit_tiff validation
         try {
             String execstring = this.checkit_tiff_binary_path + " " + filePath + " " + this.checkit_tiff_config_path;
             System.out.println("executing: " + execstring);
@@ -76,16 +91,19 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
             while (line != null) {
                 System.out.println(line);
-                extractionErrors.add(line);
+                validationLog.add(line);
                 line = reader.readLine();
             }
             if (p.exitValue() == 0) {
                 isvalid=true;
                 iswellformed=true;
+                extractionErrors.clear();
             } else { // something wrong
                 isvalid = false;
                 iswellformed = false;
+                extractionErrors=validationLog;
             }
+
         } catch (IOException e) {
             //log.error("exception creation socket, clamd not available at host=" + host + "port=" + port, e);
 
@@ -93,6 +111,35 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             System.out.println( "ERROR: checkit_tiff not available, path=" + this.checkit_tiff_binary_path + ", " + e.getMessage());
             throw new Exception("ERROR: checkit_tiff not available, path=" + this.checkit_tiff_binary_path + ", " + e.getMessage());
         }
+        // exiftool output of metadata
+        try {
+            String execstring = this.exiftool_binary_path + " -X " + filePath;
+            System.out.println("executing: " + execstring);
+            Process p = Runtime.getRuntime().exec(execstring);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line=reader.readLine();
+            String response="";
+            while (line != null) {
+                System.out.println(line);
+                response+=line;
+                line = reader.readLine();
+            }
+            attributes.put("exiftool-log", response.trim());
+            parse_exiftool_output(response.trim());
+        } catch (IOException e) {
+            //log.error("exception creation socket, clamd not available at host=" + host + "port=" + port, e);
+
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+
+        }
+        // attributes.put("checkit-tiff-version", "");
+        attributes.put("checkit-tiff-path", checkit_tiff_binary_path.trim());
+        attributes.put("checkit-tiff-conf", checkit_tiff_config_path.trim());
+        attributes.put("checkit-tiff-log", validationLog.toString());
+
     }
 
     public String getAgentName()
@@ -132,7 +179,10 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public String getAttributeByName(String attribute) {
-      return ( "dummy");
+      if (attributes.containsKey(attribute)) {
+          return attributes.get(attribute);
+      }
+        return "not found";
     }
 
     @Override
@@ -142,9 +192,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public List<String> getSupportedAttributeNames() {
-      List<String> attributes = new ArrayList<String>();
-        attributes.add("dummy");
-      return attributes;
+      return new ArrayList<String>(attributes.keySet());
 
     }
 
@@ -188,7 +236,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         // initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
         initp.put( "checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
         initp.put( "config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
-
+        initp.put( "exiftool", "/usr/bin/exiftool");
         plugin.initParams( initp );
         System.out.println("Agent: '" + plugin.getAgent() + "'");
         System.out.println();

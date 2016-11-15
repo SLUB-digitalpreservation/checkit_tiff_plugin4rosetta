@@ -31,12 +31,24 @@
 					<x_ui_type>TextField</x_ui_type>
 					<css_class>width40</css_class>
 					<x_options></x_options>
-				</x_field>
+                                      </x_field>
+                                      <x_field>
+                                        <field_name>exiftool</field_name>
+                                        <label>Path to exiftool</label>
+                                        <ui_tool_tip>add full path to exiftool</ui_tool_tip>
+                                        <mandatory>true</mandatory>
+                                        <x_logic_type>String</x_logic_type>
+                                        <x_ui_type>TextField</x_ui_type>
+                                        <default_value>/usr/bin/exiftool</default_value>
+                                        <css_class>width40</css_class>
+                                        <x_options></x_options>
+                                      </x_field>
+
 			</x_fields>
 		</fr:x_form>
 	</pl:initParameters>
 	<pl:description>SLUB Technical Metadata Extractor Plugin, using check_it_tiff to validate tiff-files</pl:description>
-	<pl:version>1.8</pl:version>
+	<pl:version>1.3</pl:version>
 	<pl:materialType>DIGITAL</pl:materialType>
 	<pl:module>Preservation</pl:module>
 	<pl:generalType>TASK</pl:generalType>
