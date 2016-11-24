@@ -15,8 +15,9 @@ you could test it using 'test.sh'
 
 == configuration
 * check blog https://developers.exlibrisgroup.com/blog/Jpylyzer-Technical-Metadata-Extractor-Plugin
+* check output of exiftool -X, alternatively check http://ns.exiftool.ca/ExifTool/1.0/
 * add Mapping under "Preservation:Extractors", switch from "Global" to "Local", use
   "Custom"-Tab
-* fill the fields
+* fill the fields 
 
 
