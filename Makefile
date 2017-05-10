@@ -4,10 +4,10 @@
 # von ExLibris an Rosetta übergibt.
 
 # Pfad zu Java 7
-JAVAPATH=$(wildcard /usr/lib/jvm/java-1.7.0-openjdk-*/bin/)
+JAVAPATH=/usr/lib/jvm/java-[78]-*/bin
 
 # Verwendete Rosetta-Version
-ROSETTAVERSION=5.0.1
+ROSETTAVERSION=5.2.0
 
 # Pfad zum Rosetta-SDK
 ROSETTASDK=/exlibris/dps/d4_1/system.dir/dps-sdk-${ROSETTAVERSION}/lib/
