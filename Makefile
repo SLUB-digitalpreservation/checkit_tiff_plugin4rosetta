@@ -1,7 +1,6 @@
 #!/bin/bash
 # Andreas Romeyke, SLUB Dresden
-# erzeugt Submission-Application, die vorbereitete Verzeichnisse per Java SDK
-# von ExLibris an Rosetta übergibt.
+# Plugin, welches TIFFs via checkit_tiff validiert
 
 # Pfad zu Java 7
 JAVAPATH=/usr/lib/jvm/java-[78]-*/bin
