@@ -117,7 +117,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
         // checkit_tiff validation (upcoming)
         try {
-            String execstring = this.upcoming_checkit_tiff_binary_path + " " + filePath + " " + this.upcoming_checkit_tiff_config_path;
+            String execstring = this.upcoming_checkit_tiff_binary_path + " " + this.upcoming_checkit_tiff_config_path + " " + filePath ;
             System.out.println("executing: " + execstring);
             Process p = Runtime.getRuntime().exec( execstring);
             p.waitFor();
