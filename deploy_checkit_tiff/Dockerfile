@@ -48,8 +48,10 @@ RUN /usr/bin/make install
 USER builder
 WORKDIR /home/builder/
 
-# get and compile checkit_tiff
+# get checkit_tiff
 RUN git clone https://github.com/SLUB-digitalpreservation/checkit_tiff.git
+RUN rm -Rf /home/builder/checkit_tiff/build_*
+# compile checkit_tiff stable
 WORKDIR /home/builder/checkit_tiff
 RUN mkdir build_stable
 WORKDIR /home/builder/checkit_tiff/build_stable
@@ -58,5 +60,17 @@ RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_stable/ \
   -DPCRE_INCLUDE_DIR=../../pcre-8.41/ ../src
 RUN make && make install
 
+# compile checkit_tiff development
+WORKDIR /home/builder/checkit_tiff
+RUN mkdir build_development
+WORKDIR /home/builder/checkit_tiff/build_development
+RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_development/ \
+  -DPCRE_LIBRARY=../../pcre-8.41/.libs/libpcre.a \
+  -DPCRE_INCLUDE_DIR=../../pcre-8.41/ ../src
+RUN make && make install
 
+# create tar-balls
+WORKDIR /tmp/
+RUN tar cfz checkit_tiff_stable.tgz checkit_tiff_stable/
+RUN tar cfz checkit_tiff_development.tgz checkit_tiff_development/
 
