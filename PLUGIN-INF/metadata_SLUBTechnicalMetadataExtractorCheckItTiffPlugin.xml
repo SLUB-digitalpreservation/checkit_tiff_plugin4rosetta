@@ -11,8 +11,8 @@
 			<md_format>1</md_format>
                         <x_fields>
                           <x_field>
-                            <field_name>actual_checkit_tiff</field_name>
-                            <label>Path to checkit_tiff</label>
+                            <field_name>current_checkit_tiff</field_name>
+                            <label>Path to current checkit_tiff</label>
                             <ui_tool_tip>add full path to checkit_tiff</ui_tool_tip>
                             <mandatory>true</mandatory>
                             <x_logic_type>String</x_logic_type>
@@ -22,8 +22,8 @@
                             <x_options></x_options>
                           </x_field>
                           <x_field>
-                            <field_name>actual_config_file</field_name>
-                            <label>Path to config file used for checkit_tiff</label>
+                            <field_name>current_config_file</field_name>
+                            <label>Path to current config file used for checkit_tiff</label>
                             <ui_tool_tip>add full path to configfile for checkit_tiff</ui_tool_tip>
                             <mandatory>true</mandatory>
                             <default_value>/etc/checkit_tiff/slub.cfg</default_value>
@@ -34,7 +34,7 @@
                           </x_field>
                           <x_field>
                             <field_name>upcoming_checkit_tiff</field_name>
-                            <label>Path to checkit_tiff</label>
+                            <label>Path to upcoming checkit_tiff</label>
                             <ui_tool_tip>add full path to checkit_tiff</ui_tool_tip>
                             <mandatory>true</mandatory>
                             <x_logic_type>String</x_logic_type>
@@ -69,7 +69,7 @@
 		</fr:x_form>
 	</pl:initParameters>
 	<pl:description>SLUB Technical Metadata Extractor Plugin, using check_it_tiff to validate tiff-files</pl:description>
-	<pl:version>1.6</pl:version>
+	<pl:version>1.7</pl:version>
 	<pl:materialType>DIGITAL</pl:materialType>
 	<pl:module>Preservation</pl:module>
 	<pl:generalType>TASK</pl:generalType>

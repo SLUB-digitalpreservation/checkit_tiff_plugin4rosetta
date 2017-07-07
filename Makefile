@@ -2,8 +2,8 @@
 # Andreas Romeyke, SLUB Dresden
 # Plugin, welches TIFFs via checkit_tiff validiert
 
-# Pfad zu Java 7
-JAVAPATH=/usr/lib/jvm/java-[78]-*/bin
+# Pfad zu Java 8
+JAVAPATH=$(wildcard /usr/lib/jvm/java-1.8.0-openjdk-*/bin/)
 
 # Verwendete Rosetta-Version
 ROSETTAVERSION=5.2.0

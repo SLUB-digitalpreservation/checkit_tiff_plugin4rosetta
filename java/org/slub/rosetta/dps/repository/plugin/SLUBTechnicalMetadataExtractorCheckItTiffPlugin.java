@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 /*public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin { */
 public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin {
 
-    private String actual_checkit_tiff_binary_path;
-    private String actual_checkit_tiff_config_path;
+    private String current_checkit_tiff_binary_path;
+    private String current_checkit_tiff_config_path;
     private String upcoming_checkit_tiff_binary_path;
     private String upcoming_checkit_tiff_config_path;
 
@@ -49,7 +49,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
     private List<String> validationLog = new ArrayList<String>();
     private boolean isvalid = false;
     private boolean iswellformed = false;
-    private boolean is_actual_checkit_tiff_valid = false;
+    private boolean is_current_checkit_tiff_valid = false;
     private boolean is_upcoming_checkit_tiff_valid = false;
 
     private Map<String,String> attributes = new HashMap<String, String>();
@@ -63,16 +63,16 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
      * @param initp parameter map
      */
     public void initParams(Map<String, String> initp) {
-        this.actual_checkit_tiff_binary_path = initp.get("actual_checkit_tiff").trim();
-        this.actual_checkit_tiff_config_path = initp.get("actual_config_file").trim();
+        this.current_checkit_tiff_binary_path = initp.get("current_checkit_tiff").trim();
+        this.current_checkit_tiff_config_path = initp.get("current_config_file").trim();
         this.upcoming_checkit_tiff_binary_path = initp.get("upcoming_checkit_tiff").trim();
         this.upcoming_checkit_tiff_config_path = initp.get("upcoming_config_file").trim();
 
         this.exiftool_binary_path = initp.get("exiftool").trim();
         System.out.println("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated with "
-                + "(actual: "
-                + " checkit_tiff_binary_path=" + actual_checkit_tiff_binary_path
-                + " cfg=" + actual_checkit_tiff_config_path
+                + "(current: "
+                + " checkit_tiff_binary_path=" + current_checkit_tiff_binary_path
+                + " cfg=" + current_checkit_tiff_config_path
                 + ") | (upcoming: "
                 + " checkit_tiff_binary_path=" + upcoming_checkit_tiff_binary_path
                 + " cfg=" + upcoming_checkit_tiff_config_path
@@ -94,13 +94,13 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     @Override
     public void extract(String filePath) throws Exception {
-        if (StringUtils.isEmptyString(actual_checkit_tiff_binary_path)) {
+        if (StringUtils.isEmptyString(current_checkit_tiff_binary_path)) {
             //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
-            throw new Exception("path for (actual) checkit_tiff_binary not found");
+            throw new Exception("path for (current) checkit_tiff_binary not found");
         }
-        if (StringUtils.isEmptyString(actual_checkit_tiff_config_path)) {
+        if (StringUtils.isEmptyString(current_checkit_tiff_config_path)) {
             //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
-            throw new Exception("path for (actual) checkit_tiff_config not found");
+            throw new Exception("path for (current) checkit_tiff_config not found");
         }
         if (StringUtils.isEmptyString(upcoming_checkit_tiff_binary_path)) {
             //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
@@ -142,11 +142,11 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             System.out.println( "ERROR: (upcoming) checkit_tiff not available, path=" + this.upcoming_checkit_tiff_binary_path + ", " + e.getMessage());
             throw new Exception("ERROR: (upcoming) checkit_tiff not available, path=" + this.upcoming_checkit_tiff_binary_path + ", " + e.getMessage());
         }
-        /* only check against actual checkit_tiff if upcoming fails */
+        /* only check against current checkit_tiff if upcoming fails */
         if (is_upcoming_checkit_tiff_valid == false) {
-            // checkit_tiff (actual)
+            // checkit_tiff (current)
             try {
-                String execstring = this.actual_checkit_tiff_binary_path + " " + filePath + " " + this.actual_checkit_tiff_config_path;
+                String execstring = this.current_checkit_tiff_binary_path + " " + filePath + " " + this.current_checkit_tiff_config_path;
                 System.out.println("executing: " + execstring);
                 Process p = Runtime.getRuntime().exec(execstring);
                 p.waitFor();
@@ -159,23 +159,23 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
                     line = reader.readLine();
                 }
                 if (p.exitValue() == 0) {
-                    is_actual_checkit_tiff_valid = true;
+                    is_current_checkit_tiff_valid = true;
                 } else { // something wrong
-                    is_actual_checkit_tiff_valid = false;
+                    is_current_checkit_tiff_valid = false;
                 }
             } catch (IOException e) {
                 //log.error("exception creation socket, clamd not available at host=" + host + "port=" + port, e);
-                System.out.println("ERROR: (actual) checkit_tiff not available, path=" + this.actual_checkit_tiff_binary_path + ", " + e.getMessage());
-                throw new Exception("ERROR: (actual) checkit_tiff not available, path=" + this.actual_checkit_tiff_binary_path + ", " + e.getMessage());
+                System.out.println("ERROR: (current) checkit_tiff not available, path=" + this.current_checkit_tiff_binary_path + ", " + e.getMessage());
+                throw new Exception("ERROR: (current) checkit_tiff not available, path=" + this.current_checkit_tiff_binary_path + ", " + e.getMessage());
             }
         }
 
-        /* If upcoming was true, only report a is valid, if actual was true. report log of upcoming, if all fail, report log for all */
+        /* If upcoming was true, only report a is valid, if current was true. report log of upcoming, if all fail, report log for all */
         if (true == is_upcoming_checkit_tiff_valid) {
             isvalid = true;
             iswellformed = true;
             extractionErrors.clear();
-        } else if (true == is_actual_checkit_tiff_valid) {
+        } else if (true == is_current_checkit_tiff_valid) {
             isvalid = true;
             iswellformed=true;
             extractionErrors = validationLog;
@@ -211,8 +211,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
         }
         // attributes.put("checkit-tiff-version", "");
-        // attributes.put("checkit-tiff-path", actual_checkit_tiff_binary_path.trim());
-        // attributes.put("checkit-tiff-conf", actual_checkit_tiff_config_path.trim());
+        // attributes.put("checkit-tiff-path", current_checkit_tiff_binary_path.trim());
+        // attributes.put("checkit-tiff-conf", current_checkit_tiff_config_path.trim());
         attributes.put("checkit-tiff-log", validationLog.toString());
 
     }
@@ -228,9 +228,9 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
      */
     public String getAgent() {
         String response="";
-        response+="actual checkit_tiff:\n";
+        response+="current checkit_tiff:\n";
         try {
-            String execstring = this.actual_checkit_tiff_binary_path + " -v";
+            String execstring = this.current_checkit_tiff_binary_path + " -v";
             Process p = Runtime.getRuntime().exec(execstring);
             p.waitFor();
             BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -654,8 +654,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         Map<String, String> initp = new HashMap<String, String>();
         // initp.put( "checkit_tiff", "/usr/bin/checkit_tiff");
         // initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
-        initp.put( "actual_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
-        initp.put( "actual_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
+        initp.put( "current_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
+        initp.put( "current_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
         initp.put( "upcoming_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
         initp.put( "upcoming_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
         initp.put( "exiftool", "/usr/bin/exiftool");
