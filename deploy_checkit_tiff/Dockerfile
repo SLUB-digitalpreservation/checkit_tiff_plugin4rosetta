@@ -53,6 +53,7 @@ RUN git clone https://github.com/SLUB-digitalpreservation/checkit_tiff.git
 RUN rm -Rf /home/builder/checkit_tiff/build_*
 # compile checkit_tiff stable
 WORKDIR /home/builder/checkit_tiff
+RUN git checkout master
 RUN mkdir build_stable
 WORKDIR /home/builder/checkit_tiff/build_stable
 RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_stable/ \
@@ -62,6 +63,7 @@ RUN make && make install
 
 # compile checkit_tiff development
 WORKDIR /home/builder/checkit_tiff
+RUN git checkout development
 RUN mkdir build_development
 WORKDIR /home/builder/checkit_tiff/build_development
 RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_development/ \
