@@ -82,7 +82,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
     private void parse_exiftool_output( String exiftoolxml ) {
         // see output of exiftool -X, alternatively check http://ns.exiftool.ca/ExifTool/1.0/
-        Pattern p = Pattern.compile("<([^>]+)>([^<]+)</\1>");
+        Pattern p = Pattern.compile("^\\s*<([^>]+)>([^<]+)</\\1>");
+        System.out.println("Orig string is: '" + exiftoolxml);
         Matcher m = p.matcher(exiftoolxml);
         if (m.matches()) {
             String key = m.group(1);
