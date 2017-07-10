@@ -1,5 +1,9 @@
 FROM centos:6.8
 MAINTAINER Andreas Romeyke <romeyke@slub-dresden.de>
+ENV checkit_tiff_current_version=v0.2.4
+ENV checkit_tiff_upcoming_version=v0.3.0
+ENV checkit_tiff_gitrepository=https://github.com/SLUB-digitalpreservation/checkit_tiff.git
+ENV pcre_version=8.41
 
 # based on https://hub.docker.com/r/rpmbuild/centos6/
 ## install base environment
@@ -39,9 +43,9 @@ CMD /srv/pkg
 WORKDIR /home/builder/
 
 # get and compile libpcre (v8)
-RUN wget -np https://ftp.pcre.org/pub/pcre/pcre-8.41.tar.bz2
-RUN tar xfj pcre-8.41.tar.bz2
-WORKDIR /home/builder/pcre-8.41/
+RUN wget -np https://ftp.pcre.org/pub/pcre/pcre-${pcre_version}.tar.bz2
+RUN tar xfj pcre-${pcre_version}.tar.bz2
+WORKDIR /home/builder/pcre-${pcre_version}/
 RUN ./configure --disable-shared -enable-static && /usr/bin/make -j
 USER root
 RUN /usr/bin/make install
@@ -49,26 +53,26 @@ USER builder
 WORKDIR /home/builder/
 
 # get checkit_tiff
-RUN git clone https://github.com/SLUB-digitalpreservation/checkit_tiff.git
+RUN git clone ${checkit_tiff_gitrepository}
 RUN rm -Rf /home/builder/checkit_tiff/build_*
 # compile checkit_tiff stable
 WORKDIR /home/builder/checkit_tiff
-RUN git checkout master
+RUN git checkout ${checkit_tiff_current_version}
 RUN mkdir build_stable
 WORKDIR /home/builder/checkit_tiff/build_stable
 RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_stable/ \
-  -DPCRE_LIBRARY=../../pcre-8.41/.libs/libpcre.a \
-  -DPCRE_INCLUDE_DIR=../../pcre-8.41/ ../src
+  -DPCRE_LIBRARY=../../pcre-${pcre_version}/.libs/libpcre.a \
+  -DPCRE_INCLUDE_DIR=../../pcre-${pcre_version}/ ../src
 RUN make && make install
 
 # compile checkit_tiff development
 WORKDIR /home/builder/checkit_tiff
-RUN git checkout development
+RUN git checkout ${checkit_tiff_upcoming_version}
 RUN mkdir build_development
 WORKDIR /home/builder/checkit_tiff/build_development
 RUN cmake -DCMAKE_INSTALL_PREFIX=/tmp/checkit_tiff_development/ \
-  -DPCRE_LIBRARY=../../pcre-8.41/.libs/libpcre.a \
-  -DPCRE_INCLUDE_DIR=../../pcre-8.41/ ../src
+  -DPCRE_LIBRARY=../../pcre-${pcre_version}/.libs/libpcre.a \
+  -DPCRE_INCLUDE_DIR=../../pcre-${pcre_version}/ ../src
 RUN make && make install
 
 # create tar-balls
