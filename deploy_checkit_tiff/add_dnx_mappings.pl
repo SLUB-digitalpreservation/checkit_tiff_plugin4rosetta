@@ -1,6 +1,6 @@
 #!/usr/bin/env perl 
 # adds all dnx properties
-# by Andreas Romeyke
+# by Andreas Romeyke (andreas.romeyke@slub-dresden.de)
 #
 # needs a geckodriver and the Selenium::Remote::Driver module
 # see http://www.seleniumhq.org/
@@ -18,11 +18,48 @@ my $passwd=shift;
 my $institution=shift;
 
 my %exiftool2dnx = (
-    "IFD0:ImageWidth" => "image.width",
+    "ICC-header:ColorSpaceData" => "icc.colorspacedata",
+    "ICC-header:DeviceModel" => "icc.devicemodel",
+    "ICC-header:PrimaryPlatform" => "icc.primaryplatform",
+    "ICC-header:ProfileCMMType" => "icc.profilecmmtype",
+    "ICC-header:ProfileCreator" => "icc.profilecreator",
+    "ICC-header:ProfileDateTime" => "icc.profiledatetime",
+    "ICC-header:ProfileVersion" => "icc.profileversion",
+    "ICC_Profile:CalibrationDateTime" => "icc.profilecalibrationdatetime",
+    "ICC_Profile:MakeAndModel" => "icc.makeandmodel",
+    "ICC_Profile:ProfileCopyright" => "icc.profilecopyright",
+    "ICC_Profile:ProfileDescription" => "icc.profiledescription",
     "IFD0:BitsPerSample" => "tiff.bitspersample",
+    "IFD0:BitsPerSample" => "tiff.bitspersample", # TIFF-Tag 258 BitsPerSample ()
+    "IFD0:Compression" => "tiff.compression",
+    "IFD0:Copyright" => "tiff.copyright", # TIFF-Tag 33432 Copyright ()
     "IFD0:Documentname" => "tiff.documentname",
+    "IFD0:Documentname" => "tiff.documentname", # TIFF-Tag 269 DocumentName ()
+    "IFD0:GrayResponseCurve" => "tiff.grayresponsecurve", # TIFF-Tag 291 GrayResponseCurve ()
+    "IFD0:GrayResponseUnit" => "tiff.grayresponseunit", # TIFF-Tag 290 GrayResponseUnit ()
+    "IFD0:ImageDescription" => "tiff.imagedescription", # TIFF-Tag 270 ImageDescription ()
+    "IFD0:ImageHeight" => "image.height", # TIFF-Tag 257 ImageLength ()
+    "IFD0:ImageWidth" => "image.width",
+    "IFD0:ImageWidth" => "image.width", # TIFF-Tag 256 ImageWidth (  )
+    "IFD0:Make" => "tiff.make", # TIFF-Tag 271 Make ()
+    "IFD0:MaxSampleValue" => "tiff.maxsamplevalue", # TIFF-Tag 281 MaxSampleValue ( )
+    "IFD0:MinSampleValue" => "tiff.minsamplevalue", # TIFF-Tag 280 MinSampleValue ( )
+    "IFD0:Model" => "tiff.model", # TIFF-Tag 272 Model ()
     "IFD0:ModifyDate" => "tiff.datetime",
+    "IFD0:ModifyDate" => "tiff.datetime", # TIFF-Tag 306 DateTime ()
+    "IFD0:PageNumber" => "tiff.pagenumber", # TIFF-Tag 297 PageNumber ()
+    "IFD0:PhotometricInterpretation" => "tiff.photometricinterpretation", # TIFF-Tag 262 PhotometricInterpretation ()
+    "IFD0:PrimaryChromacities" => "tiff.primarychromaticies", # TIFF-Tag 319 PrimaryChromaticies ()
+    "IFD0:SamplesPerPixel" => "tiff.samplesperpixel", # TIFF-Tag 277 SamplesPerPixel ()
+    "IFD0:Software" => "tiff.software", # TIFF-Tag 305 Software ()
+    "IFD0:WhitePoint" => "tiff.whitepoint", # TIFF-Tag 318 WhitePoint ()
+    "IFD0:XResolution" => "image.xresolution", # TIFF-Tag 282 XResolution ( Angabe in dpi)
+    "IFD0:YResolution" => "image.yresolution", # TIFF-Tag 283 YResolution ( Angabe in dpi)
 );
+
+my $plugin_name="SLUBTechnicalMetadataExtractorCheckItTiffPlugin";
+my $classification_group="Image (Mix)";
+
 
 print "Try to mechanize adding DNX, using: 
   host=$host
@@ -53,21 +90,10 @@ sub logout {
     print "logout:\n";
     $driver->get("http://$host:1801/mng/action/menus.do?first_time_key=com.exlibris.dps.wrk.general.menu");
     my $ele = $driver->find_element("user", "id")->click;
+    sleep 1;
     $ele = $driver->find_element("Logout", "link")->click;
 }
 
-sub extractors_add_mapping {
-    $driver->get("http://$host:1801/mng/action/menus.do?first_time_key=com.exlibris.dps.wrk.general.menu");
-    $driver->find_element("Extractors", "link")->click;
-    $driver->find_element("Custom", "link")->click;
-    $driver->find_element("Edit", "link")->click;
-    $driver->find_element("Add Mapping", "link")->click;
-    $driver->find_element("pageBeancurrentMappingextractorProperty_button", "id")->click;
-    $driver->find_element("ui-id-103", "id")->click;
-    $driver->find_element("pageBeancurrentMappingclassificationProperty_button", "id")->click;
-    $driver->find_element("ui-id-424", "id")->click;
-    $driver->find_element("page.buttons.operation", "name")->click;
-}
 
 
 sub _change_to_xxx_format_library {
@@ -85,28 +111,101 @@ sub _change_to_xxx_format_library {
     p ($td);
     $driver->find_child_element( $td, "descendant::button[\@id='undefined_button']", "xpath")->click;
     say "click combobox button";
+    return $td;
 
 }
 sub change_to_global_format_library {
-    _change_to_xxx_format_library();
+    my $td=_change_to_xxx_format_library();
     $driver->find_child_element( $td, "descendant::li[text()='true']", "xpath")->click;
     say "select true";
     $driver->find_element("//button[\@value='Update']", "xpath")->click;
     say "click update button";
 }
 sub change_to_local_format_library {
-    _change_to_xxx_format_library();
+    my $td = _change_to_xxx_format_library();
     $driver->find_child_element( $td, "descendant::li[text()='false']", "xpath")->click;
     say "select false";
     $driver->find_element("//button[\@value='Update']", "xpath")->click;
     say "click update button";
+    sleep 1;
 }
+
+sub add_dnx_property ($$) {
+    my $dnx_property = shift;
+    my $dnx_description = shift;
+    my $dow = localtime;
+    #$driver->get("http://$host:1801/mng/action/menus.do?first_time_key=com.exlibris.dps.wrk.general.menu");
+    #$driver->find_element("Preservation", "link")->click;
+    #$driver->find_element("(//a[contains(text(),'Significant Properties')])[2]", "xpath")->click;
+    sleep 1;
+    $driver->get("http://$host:1801/mng/action/pageAction.page_xml.page_sig_prop_list.xml.do?pageViewMode=Edit&pageBean.currentUserMode=GLOBAL&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryGLOBAL.mngLibraryHeader.SigProps.InnerMenu&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryGLOBAL.mngLibraryHeader.SigProps.InnerMenu&backUrl=");
+    sleep 1;
+    $driver->find_element("Add Significant Property", "link")->click;
+    $driver->find_element("selectedSigPropname", "id")->clear;
+    $driver->find_element("selectedSigPropname", "id")->send_keys("$dnx_property");
+    $driver->find_element("selectedSigPropdescription", "id")->clear;
+    $driver->find_element("selectedSigPropdescription", "id")->send_keys("$dnx_description (automatisiert durch $0 hinzugefügt, $dow)");
+    $driver->find_element("SaveSigPropGenDetails", "name")->click;
+}
+
+sub join_dnx_property_to_classification_group ($) {
+    my $dnx_property = shift;
+    say "try to join dnx property";
+    sleep 1;
+    $driver->get("http://$host:1801/mng/action/pageAction.page_xml.page_classification_list.xml.do?pageViewMode=Edit&pageBean.currentUserMode=GLOBAL&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryGLOBAL.mngLibraryHeader.Classifications.InnerMenu&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryGLOBAL.mngLibraryHeader.Classifications.InnerMenu&backUrl=");
+    sleep 1;
+    $driver->find_element("find0.0", "id")->clear;
+    $driver->find_element("find0.0", "id")->send_keys($classification_group);
+    $driver->find_element("go", "name")->click;
+    $driver->find_element("Edit", "link")->click;
+    $driver->find_element("Related Properties", "link")->click;
+    $driver->find_element("//form[\@id='classificationDetailsForm']/div/div[4]/div/div/div[2]/ul/li[410]/a/span", "xpath")->click;
+    $driver->find_element("(//input[\@type='text'])[3]", "xpath")->clear;
+    $driver->find_element("(//input[\@type='text'])[3]", "xpath")->send_keys($dnx_property);
+    $driver->find_element("SaveClassificationGenDetails", "name")->click;
+}
+
+sub extractors_add_mapping ($$) {
+    my $dnx_property = shift;
+    my $exiftool_property = shift;
+    say "try to add extractor mapping";
+    sleep 1;
+    $driver->get("http://$host:1801//mng/action/pageAction.page_xml.page_extractors_list.xml.do?pageBean.deploymentMode=BUNDLED&pageViewMode=Edit&pageBean.currentUserMode=LOCAL&RenewBean=true&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryLOCAL.mngLibraryHeader.Extractors.InnerMenu&menuKey=com.exlibris.dps.wrk.general.menu.Preservation.AdvancedPreservationActivities.mngLibraryLOCAL.mngLibraryHeader.Extractors.InnerMenu&backUrl=");
+    sleep 1;
+    $driver->find_element("Custom", "link")->click;
+    $driver->find_element("find1.0", "id")->clear;
+    $driver->find_element("find1.0", "id")->send_keys($plugin_name);
+    $driver->find_element("go", "name")->click;
+    $driver->find_element("Edit", "link")->click;
+    $driver->find_element("Add Mapping", "link")->click;
+    $driver->find_element("pageBeancurrentMappingextractorProperty_input", "id")->click;
+    $driver->find_element("pageBeancurrentMappingextractorProperty_input", "id")->clear;
+    $driver->find_element("pageBeancurrentMappingextractorProperty_input", "id")->send_keys($exiftool_property);
+    sleep 1;
+    $driver->find_element("pageBeancurrentMappingclassificationProperty_input", "id")->click;
+    $driver->find_element("pageBeancurrentMappingclassificationProperty_input", "id")->clear;
+    $driver->find_element("pageBeancurrentMappingclassificationProperty_input", "id")->send_keys("$dnx_property");
+    sleep 1;
+    $driver->find_element("pageBeancurrentMappingnormalizer_input", "id")->click;
+    $driver->find_element("pageBeancurrentMappingnormalizer_input", "id")->click;
+    $driver->find_element("pageBeancurrentMappingnormalizer_input", "id")->clear;
+    $driver->find_element("page.buttons.operation", "name")->click;
+}
+
+
 
 login();
 
 # change to global format library
 change_to_global_format_library();
+
 # add dnx property
+foreach my $exiftool_property (keys %exiftool2dnx) {
+    my $dnx_property = $exiftool2dnx{ $exiftool_property };
+    add_dnx_property($dnx_property, "$dnx_property <- Exiftool '$exiftool_property'");
+    join_dnx_property_to_classification_group( $dnx_property);
+    extractors_add_mapping ($dnx_property, $exiftool_property);
+}
 # include dnx property to classification group (Image(MIX))
 # add mapping
 # change to local format library
