@@ -4,6 +4,10 @@
 #
 # needs a geckodriver and the Selenium::Remote::Driver module
 # see http://www.seleniumhq.org/
+#
+# tested against Rosetta 5.2 using chromedriver and chromium 60.0.3112.78 
+# under Debian Stretch
+
 use strict;
 use warnings;
 use utf8;
