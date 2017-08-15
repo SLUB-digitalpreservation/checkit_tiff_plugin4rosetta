@@ -85,7 +85,7 @@ sub login {
     $driver->find_element("username", "id")->send_keys("$user");
     $driver->find_element("password", "id")->clear;
     $driver->find_element("password", "id")->send_keys("$passwd");
-    $driver->find_element("login1", "id")->click;
+    $driver->find_element("Login", "name")->click;
 }
 
 sub logout {
