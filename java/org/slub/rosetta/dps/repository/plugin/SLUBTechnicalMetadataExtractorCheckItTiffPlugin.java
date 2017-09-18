@@ -179,7 +179,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         } else if (true == is_current_checkit_tiff_valid) {
             isvalid = true;
             iswellformed=true;
-            extractionErrors = validationLog;
+            extractionErrors.clear();
         } else {
             isvalid = false;
             iswellformed = false;
