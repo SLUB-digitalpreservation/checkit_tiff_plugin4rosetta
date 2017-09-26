@@ -11,6 +11,10 @@ How to build checkit-tiff variants for Redhat system used by Rosetta
 
 == How to build
 
+# If something was built, delete all containers for specific image:
+docker ps -a | awk '{ print $1,$2 }' | grep checkit-tiff | awk '{print $1 }' | xargs -I {} docker rm {}
+
+# build stuff
 docker build -t checkit-tiff --rm=true ./
 
 == find out which image
@@ -28,8 +32,8 @@ centos              6.8                 0cd976dc0a98        10 months ago       
 
 id=$(docker create checkit-tiff)
 
-docker cp $id:/tmp/checkit_tiff_stable.tgz ./
-docker cp $id:/tmp/checkit_tiff_development.tgz ./
+docker cp $id:/tmp/checkit_tiff_current.tgz ./
+docker cp $id:/tmp/checkit_tiff_upcoming.tgz ./
 
 docker rm -v $id
 
