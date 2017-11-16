@@ -1,7 +1,7 @@
 FROM centos:6.8
 MAINTAINER Andreas Romeyke <romeyke@slub-dresden.de>
 ENV checkit_tiff_current_version=v0.2.4
-ENV checkit_tiff_upcoming_version=v0.3.0
+ENV checkit_tiff_upcoming_version=v0.3.1
 ENV checkit_tiff_gitrepository=https://github.com/SLUB-digitalpreservation/checkit_tiff.git
 ENV pcre_version=8.41
 ENV PATCH="\
