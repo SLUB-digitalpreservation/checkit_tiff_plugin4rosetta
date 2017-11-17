@@ -53,7 +53,7 @@ distclean: clean
 $(JAR): $(OBJS)
 	@mkdir build;
 	@cp -r PLUGIN-INF/ build/
-	@cp -r META-INF/ build/
+#	@cp -r META-INF/ build/
 	@cd java; find ./ -name "*.class" -print -exec cp --parents -r \{\} $(PWD)/build \; ; cd ..
 	@cd build; ${JAVAPATH}/jar cfvM ../$@ ./* ; cd ..
 

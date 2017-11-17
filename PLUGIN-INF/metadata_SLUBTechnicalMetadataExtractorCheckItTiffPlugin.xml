@@ -17,7 +17,7 @@
                             <mandatory>true</mandatory>
                             <x_logic_type>String</x_logic_type>
                             <x_ui_type>TextField</x_ui_type>
-                            <default_value>/operational_shared/software/checkit_tiff_stable</default_value>
+                            <default_value>/operational_shared/software/checkit_tiff_current</default_value>
                             <css_class>width40</css_class>
                             <x_options></x_options>
                           </x_field>
@@ -26,7 +26,7 @@
                             <label>Path to current config file used for checkit_tiff</label>
                             <ui_tool_tip>add full path to configfile for checkit_tiff</ui_tool_tip>
                             <mandatory>true</mandatory>
-                            <default_value>/operational_shared/software/cit_tiff6_baseline_SLUB_stable.cfg</default_value>
+                            <default_value>/operational_shared/software/cit_tiff6_baseline_SLUB_current.cfg</default_value>
                             <x_logic_type>String</x_logic_type>
                             <x_ui_type>TextField</x_ui_type>
                             <css_class>width40</css_class>
@@ -39,7 +39,7 @@
                             <mandatory>true</mandatory>
                             <x_logic_type>String</x_logic_type>
                             <x_ui_type>TextField</x_ui_type>
-                            <default_value>/operational_shared/software/checkit_tiff_unstable</default_value>
+                            <default_value>/operational_shared/software/checkit_tiff_upcoming</default_value>
                             <css_class>width40</css_class>
                             <x_options></x_options>
                           </x_field>
@@ -48,7 +48,7 @@
                             <label>Path to config file used for checkit_tiff</label>
                             <ui_tool_tip>add full path to configfile for checkit_tiff</ui_tool_tip>
                             <mandatory>true</mandatory>
-                            <default_value>/operational_shared/software/cit_tiff6_baseline_SLUB_unstable.cfg</default_value>
+                            <default_value>/operational_shared/software/cit_tiff6_baseline_SLUB_upcoming.cfg</default_value>
                             <x_logic_type>String</x_logic_type>
                             <x_ui_type>TextField</x_ui_type>
                             <css_class>width40</css_class>
@@ -69,7 +69,7 @@
 		</fr:x_form>
 	</pl:initParameters>
 	<pl:description>SLUB Technical Metadata Extractor Plugin, using check_it_tiff to validate tiff-files</pl:description>
-	<pl:version>1.95</pl:version>
+	<pl:version>1.96</pl:version>
 	<pl:materialType>DIGITAL</pl:materialType>
 	<pl:module>Preservation</pl:module>
 	<pl:generalType>TASK</pl:generalType>
