@@ -1,4 +1,4 @@
-FROM centos:6.8
+FROM centos:6.9
 MAINTAINER Andreas Romeyke <romeyke@slub-dresden.de>
 ENV checkit_tiff_current_version=v0.2.4
 ENV checkit_tiff_upcoming_version=v0.3.1
