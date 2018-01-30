@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.nio.file.*;
+
 
 /**
  * SLUBTechnicalMetadataExtractorCheckItTiffPlugin
@@ -93,29 +95,27 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         }
     }
 
+    private void check_path(String filePath, String msgPath, boolean is_executable) throws Exception {
+        if (StringUtils.isEmptyString(filePath)) {
+            //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
+            throw new Exception(msgPath + " is empty");
+        }
+        Path path = Paths.get(filePath);
+        if (! Files.exists( path ) || !Files.isRegularFile(path)) {
+            throw new Exception(msgPath + " does not exist (" + filePath + ")");
+        }
+        if (is_executable && ! Files.isExecutable(path)) {
+            throw new Exception(msgPath + " not executable (" + filePath + ")");
+        }
+    }
+
     @Override
     public void extract(String filePath) throws Exception {
-        if (StringUtils.isEmptyString(current_checkit_tiff_binary_path)) {
-            //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
-            throw new Exception("path for (current) checkit_tiff_binary not found");
-        }
-        if (StringUtils.isEmptyString(current_checkit_tiff_config_path)) {
-            //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
-            throw new Exception("path for (current) checkit_tiff_config not found");
-        }
-        if (StringUtils.isEmptyString(upcoming_checkit_tiff_binary_path)) {
-            //log.error("No checkit_tiff_binary_path defined. Please set the plugin parameter to hold your checkit_tiff_binary_path.");
-            throw new Exception("path for (upcoming) checkit_tiff_binary not found");
-        }
-        if (StringUtils.isEmptyString(upcoming_checkit_tiff_config_path)) {
-            //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
-            throw new Exception("path for (upcoming) checkit_tiff_config not found");
-        }
-        if (StringUtils.isEmptyString(exiftool_binary_path)) {
-            //log.error("No checkit_tiff_config_path defined. Please set the plugin parameter to hold your checkit_tiff_config_path.");
-            throw new Exception("path for exiftool_binary not found");
-        }
-
+        check_path( current_checkit_tiff_binary_path, "path for (current) checkit_tiff_binary", true);
+        check_path( current_checkit_tiff_config_path, "path for (current) checkit_tiff_config", false);
+        check_path(upcoming_checkit_tiff_binary_path, "path for (upcoming) checkit_tiff_binary", true);
+        check_path(upcoming_checkit_tiff_config_path, "path for (upcoming) checkit_tiff_config", false);
+        check_path(exiftool_binary_path, "path for exiftool_binary", true);
         // checkit_tiff validation (upcoming)
         try {
             String execstring = this.upcoming_checkit_tiff_binary_path + " " + this.upcoming_checkit_tiff_config_path + " " + filePath ;
@@ -127,7 +127,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
             while (line != null) {
                 System.out.println(line);
-                validationLog.add(line);
+                validationLog.add(line + System.lineSeparator());
                 line = reader.readLine();
             }
             if (p.exitValue() == 0) {
@@ -156,7 +156,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
 
                 while (line != null) {
                     System.out.println(line);
-                    validationLog.add(line);
+                    validationLog.add(line + System.lineSeparator());
                     line = reader.readLine();
                 }
                 if (p.exitValue() == 0) {
