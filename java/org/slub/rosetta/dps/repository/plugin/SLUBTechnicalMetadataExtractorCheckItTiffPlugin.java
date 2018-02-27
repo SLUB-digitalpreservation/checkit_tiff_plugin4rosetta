@@ -118,7 +118,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         check_path(exiftool_binary_path, "path for exiftool_binary", true);
         // checkit_tiff validation (upcoming)
         try {
-            String execstring = this.upcoming_checkit_tiff_binary_path + " " + this.upcoming_checkit_tiff_config_path + " " + filePath ;
+            String execstring = this.upcoming_checkit_tiff_binary_path + " -q " + this.upcoming_checkit_tiff_config_path + " " + filePath ;
             System.out.println("executing: " + execstring);
             Process p = Runtime.getRuntime().exec( execstring);
             p.waitFor();
@@ -147,7 +147,7 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         if (is_upcoming_checkit_tiff_valid == false) {
             // checkit_tiff (current)
             try {
-                String execstring = this.current_checkit_tiff_binary_path + " " + filePath + " " + this.current_checkit_tiff_config_path;
+                String execstring = this.current_checkit_tiff_binary_path + " -q " + filePath + " " + this.current_checkit_tiff_config_path;
                 System.out.println("executing: " + execstring);
                 Process p = Runtime.getRuntime().exec(execstring);
                 p.waitFor();
