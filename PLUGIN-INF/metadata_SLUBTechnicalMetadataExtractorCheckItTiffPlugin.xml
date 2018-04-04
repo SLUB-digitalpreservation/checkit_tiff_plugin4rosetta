@@ -69,7 +69,7 @@
 		</fr:x_form>
 	</pl:initParameters>
 	<pl:description>SLUB Technical Metadata Extractor Plugin, using check_it_tiff to validate tiff-files</pl:description>
-	<pl:version>1.101</pl:version>
+	<pl:version>1.102</pl:version>
 	<pl:materialType>DIGITAL</pl:materialType>
 	<pl:module>Preservation</pl:module>
 	<pl:generalType>TASK</pl:generalType>

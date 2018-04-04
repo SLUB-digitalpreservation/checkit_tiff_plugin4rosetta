@@ -43,23 +43,15 @@ import java.nio.file.*;
 /*public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin { */
 public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtractorPlugin {
     private static final ExLogger log = ExLogger.getExLogger(SLUBTechnicalMetadataExtractorCheckItTiffPlugin.class);
-    private enum Checkit_tiff_versions {
-        current, upcoming
-    }
-    private Map<Checkit_tiff_versions, String> checkit_tiff_binary_path;
-    private Map<Checkit_tiff_versions, String> checkit_tiff_config_path;
-    private Map<Checkit_tiff_versions, Boolean> is_checkit_tiff_valid;
-
+    private Map<Checkit_tiff_versions, String> checkit_tiff_binary_path = new HashMap<Checkit_tiff_versions, String>();
+    private Map<Checkit_tiff_versions, String> checkit_tiff_config_path = new HashMap<Checkit_tiff_versions, String>();
+    private Map<Checkit_tiff_versions, Boolean> is_checkit_tiff_valid = new HashMap<Checkit_tiff_versions, Boolean>();
     private String exiftool_binary_path;
     private List<String> extractionErrors = new ArrayList<String>();
     private List<String> validationLog = new ArrayList<String>();
     private Boolean isvalid = false;
     private Boolean iswellformed = false;
-    //private boolean is_current_checkit_tiff_valid = false;
-    //private boolean is_upcoming_checkit_tiff_valid = false;
-
     private Map<String,String> attributes = new HashMap<String, String>();
-    //static final ExLogger log = ExLogger.getExLogger(SLUBTechnicalMetadataExtractorCheckItTiffPlugin.class, ExLogger.VALIDATIONSTACK);
     /** constructor */
     public SLUBTechnicalMetadataExtractorCheckItTiffPlugin() {
         log.info("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated");
@@ -67,6 +59,34 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
             is_checkit_tiff_valid.put(v, false);
         }
     }
+
+    /** stand alone check, main file to call local installed clamd
+     * @param args list of files which should be scanned
+     */
+    public static void main(String[] args) {
+        SLUBTechnicalMetadataExtractorCheckItTiffPlugin plugin = new SLUBTechnicalMetadataExtractorCheckItTiffPlugin();
+        Map<String, String> initp = new HashMap<String, String>();
+        // initp.put( "checkit_tiff", "/usr/bin/checkit_tiff");
+        // initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
+        initp.put( "current_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
+        initp.put( "current_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
+        initp.put( "upcoming_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
+        initp.put( "upcoming_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
+        initp.put( "exiftool", "/usr/bin/exiftool");
+        plugin.initParams( initp );
+        System.out.println("Agent: '" + plugin.getAgent() + "'");
+        System.out.println();
+        for (String file : args) {
+            try {
+                plugin.extract(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.out.println("RESULT: " + plugin.isValid());
+            System.out.println("ERRORMESSAGE: " + plugin.getExtractionErrors());
+        }
+    }
+
     /** init params to configure the plugin via xml forms
      * @param initp parameter map
      */
@@ -75,8 +95,6 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
         this.checkit_tiff_binary_path.put(Checkit_tiff_versions.upcoming, initp.get("upcoming_checkit_tiff").trim());
         this.checkit_tiff_config_path.put(Checkit_tiff_versions.current, initp.get("current_config_file").trim());
         this.checkit_tiff_config_path.put(Checkit_tiff_versions.upcoming, initp.get("upcoming_config_file").trim());
-
-
 
         this.exiftool_binary_path = initp.get("exiftool").trim();
         log.info("SLUBTechnicalMetadataExtractorCheckItTiffPlugin instantiated with "
@@ -1111,31 +1129,8 @@ public class SLUBTechnicalMetadataExtractorCheckItTiffPlugin implements MDExtrac
       return "image/tiff";
     }
 
-    /** stand alone check, main file to call local installed clamd
-     * @param args list of files which should be scanned
-     */
-    public static void main(String[] args) {
-        SLUBTechnicalMetadataExtractorCheckItTiffPlugin plugin = new SLUBTechnicalMetadataExtractorCheckItTiffPlugin();
-        Map<String, String> initp = new HashMap<String, String>();
-        // initp.put( "checkit_tiff", "/usr/bin/checkit_tiff");
-        // initp.put( "config_file", "/etc/checkit_tiff/slub.cfg");
-        initp.put( "current_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
-        initp.put( "current_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
-        initp.put( "upcoming_checkit_tiff", "/home/romeyke/git/checkit_tiff/build/checkit_tiff");
-        initp.put( "upcoming_config_file", "/home/romeyke/git/checkit_tiff/example_configs/cit_tiff6_baseline_SLUBrelaxed.cfg");
-        initp.put( "exiftool", "/usr/bin/exiftool");
-        plugin.initParams( initp );
-        System.out.println("Agent: '" + plugin.getAgent() + "'");
-        System.out.println();
-        for (String file : args) {
-            try {
-                plugin.extract(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            System.out.println("RESULT: " + plugin.isValid());
-            System.out.println("ERRORMESSAGE: " + plugin.getExtractionErrors());
-        }
+    private enum Checkit_tiff_versions {
+        current, upcoming
     }
 }
 
