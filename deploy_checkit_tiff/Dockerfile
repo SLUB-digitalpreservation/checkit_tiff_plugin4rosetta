@@ -3,8 +3,8 @@ MAINTAINER Andreas Romeyke <romeyke@slub-dresden.de>
 # current could be 0.3.1 or 0.4.0, because 0.4.0 is bugfixed version of
 # checkit_tiff with rules compatible to 0.3.1 based on Handreichung TIFF v1.2
 # in checkit_tiff 0.4.1 the rules are adapted to Handreichung TIFF v1.3
-ENV checkit_tiff_current_version=v0.4.0
-ENV checkit_tiff_upcoming_version=v0.4.1
+ENV checkit_tiff_current_version=v0.4.0.1
+ENV checkit_tiff_upcoming_version=v0.4.2
 ENV checkit_tiff_gitrepository=https://github.com/SLUB-digitalpreservation/checkit_tiff.git
 ENV pcre_version=8.41
 ENV PATCH="\
