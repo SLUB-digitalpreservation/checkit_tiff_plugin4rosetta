@@ -1,23 +1,7 @@
-Plugin using checkit_tiff to validate TIFF files
-================================================
+# !!! ATTENTION !!!
 
-you need an installed checkit_tiff and the exiftool
+**This repository is not maintained any longer!**
 
-you could test it using 'test.sh'
+Please find the latest and maintained version at SLUB's public GitLab instance.
 
-== compile
-
-* make clean
-* make
-
-== install
-* copy jar-file to /operational_shared/plugins/custom/
-
-== configuration
-* check blog https://developers.exlibrisgroup.com/blog/Jpylyzer-Technical-Metadata-Extractor-Plugin
-* check output of exiftool -X, alternatively check http://ns.exiftool.ca/ExifTool/1.0/
-* add Mapping under "Preservation:Extractors", switch from "Global" to "Local", use
-  "Custom"-Tab
-* fill the fields 
-
-
+You can clone it using: `git clone https://git.slub-dresden.de/digital-preservation/checkit_tiff_plugin4rosetta.git`.
